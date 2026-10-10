@@ -1,53 +1,63 @@
-
-const textinput = document.getElementById('input');
-const numberinput = document.getElementById('amount');
-const addbtn = document.getElementById('addbtn');
-const displaylist = document.getElementById('list');
-const displaytotalamount = document.getElementById('totalamount');
-const clearbutton = document.getElementById('clearbtn');
-let totalamount = 0;
-addbtn.addEventListener('click',()=>{
-  const displayinput = textinput.value.trim();
-  const displayamount = numberinput.value.trim();
-  if(displayinput === "" || displayamount === ""){
-    alert("Please enter value")
+const textinput = document.getElementById("input");
+const amountinput = document.getElementById("amount");
+const addbtn = document.getElementById("addbtn");
+const displaylist = document.getElementById("list");
+const displaytotalamount = document.getElementById("totalamount");
+const clearbutton = document.getElementById("clearbtn");
+textinput.addEventListener("input", () => {
+  textinput.value = textinput.value.replace(/[0-9]/g, "");
+});
+let expense = [];
+let editid = null;
+addbtn.addEventListener("click", () => {
+  const enterinput = textinput.value.trim();
+  const enteramount = amountinput.value.trim();
+  if (enterinput === "" || isNaN(enteramount) || enteramount <= 0) {
+    alert("Please Enter any value");
     return;
   }
-  const list = document.createElement('li');
-
-  list.innerText = `${displayinput} $${displayamount}`;
-
-    const deletebtn = document.createElement('button');
-  deletebtn.textContent ="Del";
-  list.appendChild(deletebtn);
-  displaylist.appendChild(list);
-  textinput.value="";
-  numberinput.value ="";
-  textinput.focus();
-  deletebtn.addEventListener('click',()=>{
-    totalamount = totalamount - Number(displayamount);
-    displaytotalamount.textContent = totalamount;
-list.remove();
-
-  })
-totalamount = totalamount + Number(displayamount);
-displaytotalamount.textContent = `Total amount :- $${totalamount}`;
-const editbtn = document.createElement('button');
-editbtn.textContent = "Edit";
-list.appendChild(editbtn);
-displaylist.appendChild(list);
-editbtn.addEventListener('click',()=>{
-  textinput.value = displayinput;
-  numberinput.value = displayamount;
-  list.remove();
-  totalamount = totalamount - Number(displayamount);
-  displaytotalamount.textContent = `Total amount :- $${totalamount}`;
-})
-})
-clearbutton.addEventListener('click',()=>{
-  textinput.value ="";
-  numberinput.value ="";
-  totalamount =0;
-  displaylist.innerHTML ="";
-  displaytotalamount.textContent = `Total Amount :- $0`;
-})
+  let addexpense = {
+    id: Date.now(),
+    title: enterinput,
+    amount: Number(enteramount),
+  };
+  expense.push(addexpense);
+  textinput.value = "";
+  amountinput.value = "";
+  renderExpenses();
+});
+function renderExpenses() {
+  displaylist.innerHTML = "";
+  let total = 0;
+  expense.forEach((item) => {
+    const list = document.createElement("li");
+    list.innerText = `${item.title}$${item.amount}`;
+    total = total + item.amount;
+    const delbtn = document.createElement("button");
+    const editbtn = document.createElement("button");
+    editbtn.innerText = "Edit";
+    list.appendChild(editbtn);
+    delbtn.innerText = "Del";
+    list.appendChild(delbtn);
+    displaylist.appendChild(list);
+    delbtn.addEventListener("click", () => {
+      expense = expense.filter((exp) => exp.id !== item.id);
+      renderExpenses();
+      addbtn.innerText ="Add";
+    });
+    editbtn.addEventListener('click',()=>{
+      textinput.value = item.title;
+      amountinput.value = item.amount;
+      textinput.focus();
+      addbtn.innerText = "Update";
+    editid = item.id;
+    })
+  });
+  displaytotalamount.innerText = `Total Amount :- $${total}`;
+  clearbutton.addEventListener("click", () => {
+    expense = [];
+    textinput.value = "";
+    amountinput.value = "";
+    renderExpenses();
+  });
+}

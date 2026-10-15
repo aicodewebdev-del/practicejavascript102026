@@ -7,8 +7,8 @@ body{
 #main{
     background-color: bisque;
     width: 300px;
-    height: 450px;
-    /* justify-content: center; */
+    height: fit-content;
+    justify-content: center;
     align-items: center;
     display: flex;
     flex-direction: column;
@@ -17,4 +17,23 @@ body{
 }
 #studentname{
     margin-top: 20px;
+}
+li{
+    background-color: green;
+    color: bisque;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: none;
+    list-style: none;
+    border-radius: 8px;
+    
+}
+.deletebtn {
+    background-color: red;
+    color: white;
+    font-size: large;
+    padding: 4px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }
